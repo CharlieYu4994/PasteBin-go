@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title id="title">test</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport"
+		content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+	<link rel="stylesheet" href="https://unpkg.com/layui@2.6.8/dist/css/layui.css">
+	<script src="./script/textarea.js"></script>
+	<script src="./script/backend.js"></script>
+</head>
+
+<body style="background: #f1f1f1;">
+	<div class="layui-card" style="border-radius: 10px; margin: 5%;">
+		<div class="layui-card-header">粘贴内容</div>
+		<form class="layui-form" action="http://localhost:8080/add" method="POST" style="margin: 10px;">
+			<div class="layui-form-item">
+				<textarea class="layui-textarea" name="text" id="text" required placeholder="在此处粘贴"
+					lay-verify="required" style="border: none; min-height: 20em; resize: none;"></textarea>
+				<button class="layui-btn" lay-filter="form" id="submit" lay-submit
+					style="float: right; margin: 10px;">提交</button>
+			</div>
+		</form>
+	</div>
+</body>
+
+<script>
+	window.onload = function () {
+		var textarea = document.getElementById('text');
+		makeExpandingArea(textarea);
+		document.getElementsByClassName("layui-form")["action"] = getdomain();
+	}
+</script>
+
+</html>

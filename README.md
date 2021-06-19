@@ -1,1 +1,0 @@
-# PasteBin-go
