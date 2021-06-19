@@ -16,7 +16,7 @@
 <body style="background: #f1f1f1;">
 	<div class="layui-card" style="border-radius: 10px; margin: 5%;">
 		<div class="layui-card-header">粘贴内容</div>
-		<form class="layui-form" action="http://localhost:8080/add" method="POST" style="margin: 10px;">
+		<form class="layui-form" id="form" action="http://localhost:8080/add" method="POST" style="margin: 10px;">
 			<div class="layui-form-item">
 				<textarea class="layui-textarea" name="text" id="text" required placeholder="在此处粘贴"
 					lay-verify="required" style="border: none; min-height: 20em; resize: none;"></textarea>
@@ -31,7 +31,8 @@
 	window.onload = function () {
 		var textarea = document.getElementById('text');
 		makeExpandingArea(textarea);
-		document.getElementsByClassName("layui-form").action = getdomain();
+		console.log(getdomain())
+		document.getElementsId("form").action = getdomain();
 	}
 </script>
 
