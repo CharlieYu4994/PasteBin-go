@@ -1,4 +1,4 @@
-function getdomain() {
+function setdomain(id) {
     var url = "/config.json"
     var request = new XMLHttpRequest();
     request.open("get", url);
@@ -7,7 +7,8 @@ function getdomain() {
         if (request.status == 200) {
             console.log(request.responseText)
             var backend = JSON.parse(request.responseText)["backend"];
-            return backend
+            var form = document.getElementId(id);
+            form.action = backend
         }
     }
 }
