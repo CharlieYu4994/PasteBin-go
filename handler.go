@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"hash/fnv"
 	"net/http"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -18,10 +21,12 @@ type unit struct {
 	exp  int64
 }
 
-func hash(data []byte) string {
-	hasher := fnv.New128()
-	hasher.Write(data)
-	return string(hasher.Sum(nil))
+func hash(data unit) string {
+	tmp := []byte(data.text + strconv.Itoa(int(data.exp)))
+	hasher := fnv.New64a()
+	hasher.Write(tmp)
+	key := hex.EncodeToString(hasher.Sum(nil))
+	return strings.ToUpper(key)
 }
 
 func NewHandler(length int) *handler {
@@ -32,24 +37,23 @@ func NewHandler(length int) *handler {
 }
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/add" {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
 	if r.Method != "POST" || r.ParseForm() != nil {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	text := r.Form["text"][0]
-
-	data := &unit{
-		text: text,
-		exp:  time.Now().Unix(),
+	text, ok := r.Form["text"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
-	key := hash([]byte(text))
+	data := &unit{
+		text: text[0],
+		exp:  time.Now().Unix() + (24 * 3600),
+	}
+
+	key := hash(*data)
 
 	h.data.Add(key, data)
 	fmt.Println(key)
