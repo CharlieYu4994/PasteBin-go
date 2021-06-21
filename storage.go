@@ -73,7 +73,7 @@ func (l *LinkedHashMap) Get(key string) (interface{}, bool) {
 }
 
 func (l *LinkedHashMap) remove(n *node) {
-	if n == l.head && n == l.tail {
+	if l.head == l.tail {
 		l.head = nil
 		l.tail = nil
 	} else if n == l.head {
