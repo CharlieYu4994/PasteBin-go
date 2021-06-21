@@ -1,0 +1,8 @@
+{
+    "enabletls": false,
+    "buffsize": 100,
+    "certpath": "",
+    "keypath": "",
+    "port": "9090",
+    "frontend": "your.domain"
+}
