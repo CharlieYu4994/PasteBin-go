@@ -3,14 +3,25 @@ package main
 import "net/http"
 
 var pastebin *handler
+var conf config
 
 func init() {
-	pastebin = NewHandler(100)
+	err := readConf("./config.json", &conf)
+	if err != nil {
+		panic("Open Config Error")
+	}
+
+	pastebin = NewHandler(conf.BuffSize)
 }
 
 func main() {
 	http.HandleFunc("/add", pastebin.add)
 	http.HandleFunc("/get", pastebin.get)
 
-	http.ListenAndServe("0.0.0.0:8080", nil)
+	if conf.EnableTLS {
+		http.ListenAndServeTLS("0.0.0.0:"+conf.Port,
+			conf.CertPath, conf.KeyPath, nil)
+	} else {
+		http.ListenAndServe("0.0.0.0:"+conf.Port, nil)
+	}
 }
