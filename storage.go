@@ -58,20 +58,25 @@ func (l *LinkedHashMap) Delete(key string) bool {
 	return ok
 }
 
-func (l *LinkedHashMap) Get(key string) (bool, interface{}) {
+func (l *LinkedHashMap) Get(key string) (interface{}, bool) {
 	tmp, ok := l.table[key]
 	if !ok {
-		return ok, nil
+		return nil, ok
 	}
 
-	l.remove(tmp)
-	l.appendToTail(tmp)
+	if tmp != l.tail {
+		l.remove(tmp)
+		l.appendToTail(tmp)
+	}
 
-	return ok, tmp.data
+	return tmp.data, ok
 }
 
 func (l *LinkedHashMap) remove(n *node) {
-	if n == l.head {
+	if n == l.head && n == l.tail {
+		l.head = nil
+		l.tail = nil
+	} else if n == l.head {
 		l.head = n.next
 		l.head.prev = nil
 	} else if n == l.tail {

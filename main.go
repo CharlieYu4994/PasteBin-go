@@ -10,6 +10,7 @@ func init() {
 
 func main() {
 	http.HandleFunc("/add", pastebin.add)
+	http.HandleFunc("/get", pastebin.get)
 
 	http.ListenAndServe("0.0.0.0:8080", nil)
 }

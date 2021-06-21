@@ -1,12 +1,8 @@
 package main
 
 import (
-	"encoding/hex"
 	"fmt"
-	"hash/fnv"
 	"net/http"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 )
@@ -21,14 +17,6 @@ type unit struct {
 	exp  int64
 }
 
-func hash(data unit) string {
-	tmp := []byte(data.text + strconv.Itoa(int(data.exp)))
-	hasher := fnv.New64a()
-	hasher.Write(tmp)
-	key := hex.EncodeToString(hasher.Sum(nil))
-	return strings.ToUpper(key)
-}
-
 func NewHandler(length int) *handler {
 	return &handler{
 		data: NewLHM(length),
@@ -37,6 +25,9 @@ func NewHandler(length int) *handler {
 }
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
+	h.lock.Lock()
+	defer h.lock.Unlock()
+
 	if r.Method != "POST" || r.ParseForm() != nil {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -56,5 +47,26 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	key := hash(*data)
 
 	h.data.Add(key, data)
-	fmt.Println(key)
+	http.Redirect(w, r, "/get?k="+key, http.StatusFound)
+}
+
+func (h *handler) get(w http.ResponseWriter, r *http.Request) {
+	h.lock.Lock()
+	defer h.lock.Unlock()
+
+	key, ok := r.URL.Query()["k"]
+	if !ok {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	tmp0, ok := h.data.Get(key[0])
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	tmp := tmp0.(*unit)
+
+	text := tmp.text
+	fmt.Println(text)
 }
