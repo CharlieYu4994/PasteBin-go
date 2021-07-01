@@ -5,8 +5,7 @@ function getdomain() {
     request.send(null);
     request.onload = function () {
         if (request.status == 200) {
-            var backend = JSON.parse(request.responseText)["backend"];
-            return backend
+            return JSON.parse(request.responseText)["backend"];
         }
     }
 }
