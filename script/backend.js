@@ -1,5 +1,5 @@
 function getdomain() {
-    var url = "/config.json"
+    var url = "config.json"
     var request = new XMLHttpRequest();
     request.open("get", url);
     request.send(null);
