@@ -16,7 +16,7 @@
 <body style="background: #f1f1f1;">
 	<div class="card" style="border-radius: 10px; margin: 5%;">
 		<div class="title">粘贴内容</div>
-		<form id="data" action="api/add" method="POST" style="margin: 10px;">
+		<form name="data" action="api/add" method="POST" style="margin: 10px;">
 			<div class="item">
 				<textarea class="textarea" name="text" id="text" required placeholder="在此处粘贴"
 					style="border: none; min-height: 20em; resize: none;"></textarea>
@@ -30,8 +30,7 @@
 	window.onload = function () {
 		var textarea = document.getElementById('text');
 		makeExpandingArea(textarea);
-		var form = document.getElementId("data");
-		form.action = getdomain()
+		document.data.action = getdomain()
 	}
 </script>
 
