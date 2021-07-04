@@ -70,3 +70,29 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	text := tmp.text
 	fmt.Println(text)
 }
+
+func (h *handler) cleanup() {
+	var data *unit
+	tmp := h.data.head
+	for {
+		if tmp == nil {
+			return
+		}
+		data = tmp.data.(*unit)
+		if data.exp <= time.Now().Unix() {
+			h.lock.Lock()
+			h.data.Delete(tmp.key)
+			h.lock.Unlock()
+		}
+		tmp = tmp.next
+	}
+}
+
+func (h *handler) timeToCleanUp(dur int) {
+	timer := time.NewTimer(0)
+	for {
+		<-timer.C
+		h.cleanup()
+		timer.Reset(time.Second * time.Duration(dur))
+	}
+}

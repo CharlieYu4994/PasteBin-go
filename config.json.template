@@ -4,5 +4,6 @@
     "certpath": "",
     "keypath": "",
     "port": "9090",
-    "frontend": "your.frontend.domain"
+    "frontend": "your.frontend.domain",
+    "cleandur": 10
 }
