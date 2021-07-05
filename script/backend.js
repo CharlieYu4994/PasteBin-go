@@ -23,6 +23,6 @@ function gettext(url) {
     request.open("get", url+"/get?k="+arg, false)
     request.send(null)
     if (request.readyState == 4) {
-        return request.responseText()
+        return request.responseText
     }
 }
