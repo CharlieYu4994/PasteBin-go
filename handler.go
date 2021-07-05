@@ -47,7 +47,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	key := hash(*data)
 
 	h.data.Add(key, data)
-	http.Redirect(w, r, "/get?k="+key, http.StatusFound)
+	http.Redirect(w, r, conf.Frontend+"/get?k="+key, http.StatusFound)
 }
 
 func (h *handler) get(w http.ResponseWriter, r *http.Request) {

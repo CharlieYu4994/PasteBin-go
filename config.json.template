@@ -1,9 +1,10 @@
 {
     "enabletls": false,
+    "enableipv6": true,
     "buffsize": 100,
     "certpath": "",
     "keypath": "",
     "port": "9090",
-    "frontend": "your.frontend.domain",
+    "frontend": "https://your.frontend.domain",
     "cleandur": 10
 }
