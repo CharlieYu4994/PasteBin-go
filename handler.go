@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -55,7 +54,8 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	defer h.lock.Unlock()
 
 	key, ok := r.URL.Query()["k"]
-	if !ok {
+	origin := r.Header.Get("Origin")
+	if !ok || origin != conf.Frontend {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -68,7 +68,11 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	tmp := tmp0.(*unit)
 
 	text := tmp.text
-	fmt.Println(text)
+	w.Header().Add("Access-Control-Allow-Origin", origin)
+	w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(text))
 }
 
 func (h *handler) cleanup() {
