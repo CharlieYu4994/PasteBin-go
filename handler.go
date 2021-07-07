@@ -40,7 +40,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 
 	data := &unit{
 		text: text[0],
-		exp:  time.Now().Unix() + (24 * 3600),
+		exp:  time.Now().Unix() + (5 * 60),
 	}
 
 	key := hash(*data)
@@ -59,6 +59,9 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	w.Header().Add("Access-Control-Allow-Origin", origin)
+	w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
 
 	tmp0, ok := h.data.Get(key[0])
 	if !ok {
@@ -68,9 +71,6 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	tmp := tmp0.(*unit)
 
 	text := tmp.text
-	w.Header().Add("Access-Control-Allow-Origin", origin)
-	w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(text))
 }
