@@ -40,7 +40,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 
 	data := &unit{
 		text: text[0],
-		exp:  time.Now().Unix() + (5 * 60),
+		exp:  time.Now().Unix() + (24 * 3600),
 	}
 
 	key := hash(*data)
