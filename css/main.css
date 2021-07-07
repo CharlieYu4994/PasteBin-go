@@ -1,3 +1,6 @@
+hr {
+    color: #eee;
+}
 .card {
     background-color: white;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
@@ -48,4 +51,17 @@
     min-height: 20em;
     color: #111111;
     padding: 20px;
+}
+
+#exp {
+    height: 38px;
+    width: 50%;
+    float: left;
+    margin: 10px;
+    outline: none;
+    color: #111111;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
 }
