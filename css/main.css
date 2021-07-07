@@ -46,5 +46,7 @@
 
 #text {
     min-height: 20em;
-    font-size: 14px;
+    font-size: 20px;
+    color: #111111;
+    padding: 20px;
 }
