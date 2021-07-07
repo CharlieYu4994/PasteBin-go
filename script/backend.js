@@ -4,7 +4,12 @@ function getdomain() {
     request.open("get", url, false);
     request.send(null);
     if (request.readyState == 4) {
-        return JSON.parse(request.responseText)["backend"];
+        if (request.status == 200) {
+            return JSON.parse(request.responseText)["backend"];
+        }
+        else {
+            return "api/add";
+        }
     }
 }
 
@@ -15,14 +20,19 @@ function getQueryString(name) {
         return decodeURIComponent(res[2]);
     };
     return null;
- }
+}
 
 function gettext(url) {
     var request = new XMLHttpRequest();
-    var arg = getQueryString("k")
-    request.open("get", url+"/get?k="+arg, false)
-    request.send(null)
+    var arg = getQueryString("k");
+    request.open("get", url + "/get?k=" + arg, false);
+    request.send(null);
     if (request.readyState == 4) {
-        return request.responseText
+        if (request.status == 200) {
+            return request.responseText;
+        }
+        else {
+            return "查询失败";
+        }
     }
 }

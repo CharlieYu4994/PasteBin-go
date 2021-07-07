@@ -43,3 +43,8 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+#text {
+    min-height: 20em;
+    font-size: 14px;
+}
