@@ -1,10 +1,11 @@
 {
-    "enabletls": false,
-    "enableipv6": true,
-    "buffsize": 100,
-    "certpath": "",
-    "keypath": "",
-    "port": "9090",
+    "enabletls": false, // 是否开启 TLS
+    "certpath": "",     // 证书路径
+    "keypath": "",      // 私钥路径
+    "enableipv6": true, // 是否监听 IPv6
+    "port": "9090",     // 监听端口
     "frontend": "https://your.frontend.domain",
-    "cleandur": 10
+    // 前端的 URL（需要协议名)
+    "cleandur": 10      // 清理过期粘贴版的间隔时间（单位：秒）
+    "buffsize": 100,    // 存储的粘贴版最大数量
 }
