@@ -25,14 +25,7 @@ func main() {
 	if conf.EnableTLS {
 		http.ListenAndServeTLS("0.0.0.0:"+conf.Port,
 			conf.CertPath, conf.KeyPath, nil)
-		if conf.EnableIPv6 {
-			http.ListenAndServeTLS("[::]:"+conf.Port,
-				conf.CertPath, conf.KeyPath, nil)
-		}
 	} else {
 		http.ListenAndServe("0.0.0.0:"+conf.Port, nil)
-		if conf.EnableIPv6 {
-			http.ListenAndServe("[::]:"+conf.Port, nil)
-		}
 	}
 }
