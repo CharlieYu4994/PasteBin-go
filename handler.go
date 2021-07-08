@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -32,15 +33,20 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tmp := r.Form["exp"][0]
+	if tmp == "" {
+		tmp = "1440"
+	}
+	exp, err := strconv.Atoi(tmp)
 	text, ok := r.Form["text"]
-	if !ok {
+	if !ok || err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	data := &unit{
 		text: text[0],
-		exp:  time.Now().Unix() + (24 * 3600),
+		exp:  time.Now().Unix() + int64(exp*60),
 	}
 
 	key := hash(*data)
