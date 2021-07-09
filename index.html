@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title id="title">PasteBin-go</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./script/textarea.js"></script>
+    <script src="./script/backend.js"></script>
+</head>
+
+<body style="background: #f1f1f1;">
+    <div class="card" style="border-radius: 10px; margin: 5%;">
+        <div class="title">粘贴内容</div>
+        <form name="data" action="api/add" method="POST" style="margin: 10px;">
+            <div class="item">
+                <textarea class="textarea" id="textarea" name="text" required placeholder="在此处粘贴"
+                    style="border: none; min-height: 20em; resize: none;"></textarea>
+                <hr>
+                <input type="text" name="exp" id="exp" placeholder="保留时间（分钟）">
+                <button class="btn" id="submit" style="float: right; margin: 10px;">提交</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+    window.onload = function () {
+        var textarea = document.getElementById('textarea');
+        makeExpandingArea(textarea);
+        var backend = getdomain();
+        document.data.action = backend + "/add";
+    }
+</script>
+
+</html>
