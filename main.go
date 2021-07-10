@@ -1,14 +1,20 @@
 package main
 
 import (
+	"flag"
 	"net/http"
 )
 
 var pastebin *handler
 var conf config
+var confpath string
 
 func init() {
-	err := readConf("./config.json", &conf)
+	flag.StringVar(&confpath, "c", "./config.json", "Set the config path")
+
+	flag.Parse()
+
+	err := readConf(confpath, &conf)
 	if err != nil {
 		panic("Open Config Error")
 	}
