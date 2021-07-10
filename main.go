@@ -27,6 +27,7 @@ func init() {
 func main() {
 	http.HandleFunc("/add", pastebin.add)
 	http.HandleFunc("/get", pastebin.get)
+	http.HandleFunc("/del", pastebin.del)
 
 	if conf.EnableTLS {
 		http.ListenAndServeTLS("0.0.0.0:"+conf.Port,

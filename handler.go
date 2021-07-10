@@ -25,9 +25,6 @@ func NewHandler(length int) *handler {
 }
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
-	h.lock.Lock()
-	defer h.lock.Unlock()
-
 	if r.Method != "POST" || r.ParseForm() != nil {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -44,27 +41,25 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expdete := time.Now().Unix() + int64(exp*60)
 	data := &unit{
 		text: text[0],
-		exp:  expdete,
+		exp:  time.Now().Unix() + int64(exp*60),
 	}
 
 	key := hash(*data)
-
+	h.lock.Lock()
 	h.data.Add(key, data)
+	h.lock.Unlock()
+
 	http.SetCookie(w, &http.Cookie{
-		Name:    "token_" + key,
-		Value:   key,
-		Expires: time.Unix(expdete, 0),
+		Name:   "token_" + key,
+		Value:  key,
+		MaxAge: exp * 60,
 	})
 	http.Redirect(w, r, conf.Frontend+"/get?k="+key, http.StatusFound)
 }
 
 func (h *handler) get(w http.ResponseWriter, r *http.Request) {
-	h.lock.Lock()
-	defer h.lock.Unlock()
-
 	key, ok := r.URL.Query()["k"]
 	origin := r.Header.Get("Origin")
 	if !ok || origin != conf.Frontend {
@@ -75,7 +70,9 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
 
+	h.lock.Lock()
 	tmp0, ok := h.data.Get(key[0])
+	h.lock.Unlock()
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -85,6 +82,10 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	text := tmp.text
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(text))
+}
+
+func (h *handler) del(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func (h *handler) cleanup() {
@@ -105,7 +106,7 @@ func (h *handler) cleanup() {
 }
 
 func (h *handler) timeToCleanUp(dur int) {
-	timer := time.NewTimer(0)
+	timer := time.NewTimer(time.Second * time.Duration(dur))
 	for {
 		<-timer.C
 		h.cleanup()
