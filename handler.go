@@ -44,14 +44,20 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	expdete := time.Now().Unix() + int64(exp*60)
 	data := &unit{
 		text: text[0],
-		exp:  time.Now().Unix() + int64(exp*60),
+		exp:  expdete,
 	}
 
 	key := hash(*data)
 
 	h.data.Add(key, data)
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token_" + key,
+		Value:   key,
+		Expires: time.Unix(expdete, 0),
+	})
 	http.Redirect(w, r, conf.Frontend+"/get?k="+key, http.StatusFound)
 }
 
