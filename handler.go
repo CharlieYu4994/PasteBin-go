@@ -86,7 +86,7 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	key, ok := r.URL.Query()["k"]
-	_, err := r.Cookie("token_" + key[0])
+	cookie, err := r.Cookie("token_" + key[0])
 	if !ok || err != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("You Cant Delete This Paste"))
@@ -98,10 +98,18 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	h.lock.Unlock()
 
 	if !ok {
+		http.SetCookie(w, &http.Cookie{
+			Name:   cookie.Name,
+			MaxAge: -1,
+		})
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	http.SetCookie(w, &http.Cookie{
+		Name:   cookie.Name,
+		MaxAge: -1,
+	})
 	http.Redirect(w, r, conf.Frontend, http.StatusFound)
 }
 
