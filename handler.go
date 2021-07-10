@@ -85,7 +85,24 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) del(w http.ResponseWriter, r *http.Request) {
+	key, ok := r.URL.Query()["k"]
+	_, err := r.Cookie("token_" + key[0])
+	if !ok || err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("You Cant Delete This Paste"))
+		return
+	}
 
+	h.lock.Lock()
+	ok = h.data.Delete(key[0])
+	h.lock.Unlock()
+
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, conf.Frontend, http.StatusFound)
 }
 
 func (h *handler) cleanup() {
