@@ -100,7 +100,7 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.SetCookie(w, &http.Cookie{
 			Name:   cookie.Name,
-			MaxAge: -1,
+			MaxAge: 0,
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -108,7 +108,7 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:   cookie.Name,
-		MaxAge: -1,
+		MaxAge: 0,
 	})
 	http.Redirect(w, r, conf.Frontend, http.StatusFound)
 }
