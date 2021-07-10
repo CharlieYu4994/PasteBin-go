@@ -22,9 +22,8 @@ function getQueryString(name) {
     return null;
 }
 
-function gettext(url) {
+function gettext(url, arg) {
     var request = new XMLHttpRequest();
-    var arg = getQueryString("k");
     request.open("get", url + "/get?k=" + arg, false);
     request.send(null);
     if (request.readyState == 4) {

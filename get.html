@@ -12,16 +12,21 @@
 </head>
 
 <body style="background: #f1f1f1;">
-    <div class="card" style="border-radius: 10px; margin: 5%;">
+    <div class="card item" style="border-radius: 10px; margin: 5%;">
         <pre id="text">加载中……</pre>
+        <a id="delete" href="api/delete">
+            <button class="btn" style="float: right; margin: 10px;">删除</button>
+        </a>
     </div>
 </body>
 
 <script>
     window.onload = function () {
         var backend = getdomain();
-        var text = gettext(backend);
+        var arg = getQueryString("k");
+        var text = gettext(backend, arg);
         document.getElementById("text").innerHTML = text;
+        document.getElementById("delete").href = backend + "/delete?k=" + arg
     }
 </script>
 
