@@ -99,16 +99,16 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 
 	if !ok {
 		http.SetCookie(w, &http.Cookie{
-			Name:   cookie.Name,
-			MaxAge: 0,
+			Name:    cookie.Name,
+			Expires: time.Unix(1, 0),
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:   cookie.Name,
-		MaxAge: 0,
+		Name:    cookie.Name,
+		Expires: time.Unix(1, 0),
 	})
 	http.Redirect(w, r, conf.Frontend, http.StatusFound)
 }
