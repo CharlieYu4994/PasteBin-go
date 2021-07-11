@@ -1,5 +1,31 @@
 hr {
-    color: #eee;
+    color: #d0d0d5;
+    border: double;
+    border-width: 3px 5px;
+    border-color: #d0d0d5 transparent;
+    height: 1px;
+    overflow: visible;
+    margin-left: 20px;
+    margin-right: 20px;
+    position: relative;
+}
+hr:before, 
+hr:after {
+    content: '';
+    position: absolute;
+    width: 5px; height: 5px;
+    border-width: 0 3px 3px 0;
+    border-style: double;
+    top: -3px;
+    background: radial-gradient(2px at 1px 1px, currentColor 2px, transparent 0) no-repeat;
+}
+hr:before {
+    transform: rotate(-45deg);
+    left: -20px;
+}
+hr:after {
+    transform: rotate(135deg);
+    right: -20px;
 }
 .card {
     background-color: white;
@@ -55,9 +81,6 @@ hr {
 
 #exp {
     height: 38px;
-    width: 50%;
-    float: left;
-    margin: 10px;
     outline: none;
     color: #111111;
     font-size: 14px;
