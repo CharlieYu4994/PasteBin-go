@@ -30,6 +30,11 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.ContentLength > int64(conf.MaxLength)*1024+64 {
+		w.WriteHeader(http.StatusRequestEntityTooLarge)
+		return
+	}
+
 	tmp := r.Form["exp"][0]
 	if tmp == "" {
 		tmp = "1440"

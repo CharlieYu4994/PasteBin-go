@@ -14,6 +14,7 @@ type config struct {
 	Port      string `json:"port"`
 	Frontend  string `json:"frontend"`
 	CleanDur  int    `json:"cleandur"`
+	MaxLength int    `json:"maxlength"`
 }
 
 func readConf(path string, conf *config) error {
