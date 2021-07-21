@@ -21,6 +21,10 @@ func init() {
 
 	pastebin = NewHandler(conf.BuffSize)
 
+	for i := 0; i < len(conf.WhiteList)-1; i++ {
+		pastebin.whitelist[conf.WhiteList[i]] = struct{}{}
+	}
+
 	go pastebin.timeToCleanUp(conf.CleanDur)
 }
 

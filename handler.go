@@ -8,8 +8,9 @@ import (
 )
 
 type handler struct {
-	data *LinkedHashMap
-	lock sync.Mutex
+	lhm       *LinkedHashMap
+	lock      sync.Mutex
+	whitelist map[string]struct{}
 }
 
 type unit struct {
@@ -19,13 +20,15 @@ type unit struct {
 
 func NewHandler(length int) *handler {
 	return &handler{
-		data: NewLHM(length),
-		lock: sync.Mutex{},
+		lhm:       NewLHM(length),
+		lock:      sync.Mutex{},
+		whitelist: make(map[string]struct{}),
 	}
 }
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" || r.ParseForm() != nil {
+	ok := h.check(w, r)
+	if r.Method != "POST" || r.ParseForm() != nil || !ok {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -53,7 +56,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 
 	key := hash(*data)
 	h.lock.Lock()
-	h.data.Add(key, data)
+	h.lhm.Add(key, data)
 	h.lock.Unlock()
 
 	http.SetCookie(w, &http.Cookie{
@@ -61,22 +64,20 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		Value:  key,
 		MaxAge: exp * 60,
 	})
-	http.Redirect(w, r, conf.Frontend+"/get?k="+key, http.StatusFound)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(key))
 }
 
 func (h *handler) get(w http.ResponseWriter, r *http.Request) {
-	key, ok := r.URL.Query()["k"]
-	origin := r.Header.Get("Origin")
-	if !ok || origin != conf.Frontend {
+	key, ok0 := r.URL.Query()["k"]
+	ok1 := h.check(w, r)
+	if !ok1 || !ok0 {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Add("Access-Control-Allow-Origin", origin)
-	w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
 
 	h.lock.Lock()
-	tmp0, ok := h.data.Get(key[0])
+	tmp0, ok := h.lhm.Get(key[0])
 	h.lock.Unlock()
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
@@ -99,7 +100,7 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.lock.Lock()
-	ok = h.data.Delete(key[0])
+	ok = h.lhm.Delete(key[0])
 	h.lock.Unlock()
 
 	if !ok {
@@ -115,12 +116,28 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 		Name:    cookie.Name,
 		Expires: time.Unix(1, 0),
 	})
-	http.Redirect(w, r, conf.Frontend, http.StatusFound)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *handler) check(w http.ResponseWriter, r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+	if origin == "" {
+		return true
+	}
+
+	_, ok := h.whitelist[origin]
+	if !ok {
+		return false
+	}
+	w.Header().Add("Access-Control-Allow-Origin", origin)
+	w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
+	return true
 }
 
 func (h *handler) cleanup() {
 	var data *unit
-	tmp := h.data.head
+	tmp := h.lhm.head
 	for {
 		if tmp == nil {
 			return
@@ -128,7 +145,7 @@ func (h *handler) cleanup() {
 		data = tmp.data.(*unit)
 		if data.exp <= time.Now().Unix() {
 			h.lock.Lock()
-			h.data.Delete(tmp.key)
+			h.lhm.Delete(tmp.key)
 			h.lock.Unlock()
 		}
 		tmp = tmp.next

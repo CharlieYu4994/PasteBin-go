@@ -3,7 +3,7 @@
     "certpath": "",     // 证书路径
     "keypath": "",      // 私钥路径
     "port": "9090",     // 监听端口
-    "frontend": "https://your.frontend.domain",
+    "whitelist": ["https://your.frontend.domain"],
     // 前端的 URL（需要协议名)
     "cleandur": 10      // 清理过期粘贴版的间隔时间（单位：秒）
     "buffsize": 100,    // 存储的粘贴板最大数量

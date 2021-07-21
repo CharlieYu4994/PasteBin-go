@@ -7,14 +7,14 @@ import (
 )
 
 type config struct {
-	EnableTLS bool   `json:"enabletls"`
-	CertPath  string `json:"certpath"`
-	KeyPath   string `json:"keypath"`
-	BuffSize  int    `json:"buffsize"`
-	Port      string `json:"port"`
-	Frontend  string `json:"frontend"`
-	CleanDur  int    `json:"cleandur"`
-	MaxLength int    `json:"maxlength"`
+	EnableTLS bool     `json:"enabletls"`
+	CertPath  string   `json:"certpath"`
+	KeyPath   string   `json:"keypath"`
+	BuffSize  int      `json:"buffsize"`
+	Port      string   `json:"port"`
+	CleanDur  int      `json:"cleandur"`
+	MaxLength int      `json:"maxlength"`
+	WhiteList []string `json:"whitelist"`
 }
 
 func readConf(path string, conf *config) error {
