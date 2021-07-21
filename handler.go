@@ -63,6 +63,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token_" + key,
 		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 		Value:    key,
 		MaxAge:   exp * 60,
 	})
