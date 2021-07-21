@@ -6,8 +6,7 @@ function getdomain() {
     if (request.readyState == 4) {
         if (request.status == 200) {
             return JSON.parse(request.responseText)["backend"];
-        }
-        else {
+        } else {
             return "api/add";
         }
     }
@@ -29,9 +28,23 @@ function gettext(url, arg) {
     if (request.readyState == 4) {
         if (request.status == 200) {
             return request.responseText;
-        }
-        else {
+        } else {
             return "查询失败";
         }
     }
+}
+
+function sendFormData(url, form) {
+    var request = new XMLHttpRequest();
+    var fd = new FormData(form);
+
+    request.open("POST", url+"/add");
+    request.send(fd);
+    request.addEventListener("load", function () {
+        if (request.status == 200) {
+            window.location.href = "/get?" + request.responseText
+        } else {
+            alert("提交失败")
+        }
+    });
 }
