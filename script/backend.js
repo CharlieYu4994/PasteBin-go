@@ -42,7 +42,7 @@ function sendFormData(url, form) {
     request.send(fd);
     request.addEventListener("load", function () {
         if (request.status == 200) {
-            window.location.href = "/get?" + request.responseText
+            window.location.href = "/get?k=" + request.responseText
         } else {
             alert("提交失败")
         }
