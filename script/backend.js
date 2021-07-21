@@ -39,6 +39,7 @@ function sendFormData(url, form) {
     var fd = new FormData(form);
 
     request.open("POST", url+"/add");
+    request.withCredentials=true;
     request.send(fd);
     request.addEventListener("load", function () {
         if (request.status == 200) {
