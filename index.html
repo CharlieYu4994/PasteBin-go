@@ -38,7 +38,7 @@
         var backend = getdomain();
         var form = document.getElementById("data");
         form.addEventListener("submit", function() {
-            sendFormData(backend)
+            sendFormData(backend, form);
         });
     }
 </script>
