@@ -28,7 +28,8 @@ func NewHandler(length int) *handler {
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	ok := h.check(w, r)
-	if r.Method != "POST" || r.ParseForm() != nil || !ok {
+
+	if r.Method != "POST" || r.ParseMultipartForm(100) != nil || !ok {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -38,12 +39,12 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmp := r.Form["exp"][0]
+	tmp := r.MultipartForm.Value["exp"][0]
 	if tmp == "" {
 		tmp = "1440"
 	}
 	exp, err := strconv.Atoi(tmp)
-	text, ok := r.Form["text"]
+	text, ok := r.MultipartForm.Value["text"]
 	if !ok || err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -60,6 +61,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	h.lock.Unlock()
 
 	http.SetCookie(w, &http.Cookie{
+		Path:   "/",
 		Name:   "token_" + key,
 		Value:  key,
 		MaxAge: exp * 60,
