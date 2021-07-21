@@ -61,10 +61,10 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	h.lock.Unlock()
 
 	http.SetCookie(w, &http.Cookie{
-		Path:   "/",
-		Name:   "token_" + key,
-		Value:  key,
-		MaxAge: exp * 60,
+		Name:     "token_" + key,
+		SameSite: http.SameSiteNoneMode,
+		Value:    key,
+		MaxAge:   exp * 60,
 	})
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(key))
