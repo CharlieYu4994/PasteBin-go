@@ -37,7 +37,8 @@
         makeExpandingArea(textarea);
         var backend = getdomain();
         var form = document.getElementById("data");
-        form.addEventListener("submit", function() {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
             sendFormData(backend, form);
         });
     }
