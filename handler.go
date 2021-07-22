@@ -107,8 +107,10 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 
 	if !ok0 {
 		http.SetCookie(w, &http.Cookie{
-			Name:    cookie.Name,
-			Expires: time.Unix(1, 0),
+			Name:     cookie.Name,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
+			Expires:  time.Unix(1, 0),
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		return
