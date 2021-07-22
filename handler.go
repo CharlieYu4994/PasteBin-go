@@ -28,8 +28,7 @@ func NewHandler(length int) *handler {
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 	ok := h.check(w, r)
-
-	if r.Method != "POST" || r.ParseMultipartForm(100) != nil || !ok {
+	if r.Method != "POST" || !ok {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -39,19 +38,19 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmp := r.MultipartForm.Value["exp"][0]
+	tmp := r.PostFormValue("exp")
 	if tmp == "" {
 		tmp = "1440"
 	}
 	exp, err := strconv.Atoi(tmp)
-	text, ok := r.MultipartForm.Value["text"]
-	if !ok || err != nil {
+	text := r.PostFormValue("text")
+	if text == "" || err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	data := &unit{
-		text: text[0],
+		text: text,
 		exp:  time.Now().Unix() + int64(exp*60),
 	}
 
@@ -94,19 +93,19 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) del(w http.ResponseWriter, r *http.Request) {
-	key, ok := r.URL.Query()["k"]
+	key, ok0 := r.URL.Query()["k"]
+	ok1 := h.check(w, r)
 	cookie, err := r.Cookie("token_" + key[0])
-	if !ok || err != nil {
+	if !ok0 || !ok1 || err != nil {
 		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("You Cant Delete This Paste"))
 		return
 	}
 
 	h.lock.Lock()
-	ok = h.lhm.Delete(key[0])
+	ok0 = h.lhm.Delete(key[0])
 	h.lock.Unlock()
 
-	if !ok {
+	if !ok0 {
 		http.SetCookie(w, &http.Cookie{
 			Name:    cookie.Name,
 			Expires: time.Unix(1, 0),
