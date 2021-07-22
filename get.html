@@ -14,19 +14,17 @@
 <body style="background: #f1f1f1;">
     <div class="card item" style="border-radius: 10px; margin: 5%;">
         <pre id="text">加载中……</pre>
-        <a id="delete" href="api/delete">
-            <button class="btn" style="float: right; margin: 10px;">删除</button>
-        </a>
+        <button id="delete" class="btn" style="float: right; margin: 10px;">删除</button>
     </div>
 </body>
 
 <script>
     window.onload = function () {
         var backend = getdomain();
-        var arg = getQueryString("k");
-        var text = gettext(backend, arg);
+        var key = getQueryString("k");
+        var text = gettext(backend, key);
         document.getElementById("text").innerHTML = text;
-        document.getElementById("delete").href = backend + "/del?k=" + arg
+        document.getElementById("delete").onclick = del(backend, key)
     }
 </script>
 
