@@ -38,6 +38,7 @@ function sendFormData(url, form) {
     var request = new XMLHttpRequest();
     var fd = new FormData(form);
 
+    request.withCredentials = true;
     request.open("POST", url+"/add");
     request.send(fd);
     request.addEventListener("load", function() {
