@@ -24,7 +24,9 @@
         var key = getQueryString("k");
         var text = gettext(backend, key);
         document.getElementById("text").innerHTML = text;
-        document.getElementById("delete").onclick = del(backend, key)
+        document.getElementById("delete").onclick = function() {
+            del(url, key);
+        }
     }
 </script>
 
