@@ -3,7 +3,7 @@ package main
 type node struct {
 	prev *node
 	key  string
-	data interface{}
+	data *paste
 	next *node
 }
 
@@ -23,7 +23,7 @@ func NewLHM(length int) *LinkedHashMap {
 	}
 }
 
-func (l *LinkedHashMap) Add(key string, data interface{}) {
+func (l *LinkedHashMap) Add(key string, data *paste) {
 	tmp := &node{
 		prev: l.tail,
 		key:  key,
@@ -58,7 +58,7 @@ func (l *LinkedHashMap) Delete(key string) bool {
 	return ok
 }
 
-func (l *LinkedHashMap) Get(key string) (interface{}, bool) {
+func (l *LinkedHashMap) Get(key string) (*paste, bool) {
 	tmp, ok := l.table[key]
 	if !ok {
 		return nil, ok

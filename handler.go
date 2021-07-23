@@ -13,7 +13,7 @@ type handler struct {
 	whitelist map[string]struct{}
 }
 
-type unit struct {
+type paste struct {
 	text string
 	exp  int64
 }
@@ -49,7 +49,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &unit{
+	data := &paste{
 		text: text,
 		exp:  time.Now().Unix() + int64(exp*60),
 	}
@@ -79,13 +79,12 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.lock.Lock()
-	tmp0, ok := h.lhm.Get(key[0])
+	tmp, ok := h.lhm.Get(key[0])
 	h.lock.Unlock()
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	tmp := tmp0.(*unit)
 
 	text := tmp.text
 	w.WriteHeader(http.StatusOK)
@@ -140,13 +139,13 @@ func (h *handler) checkOrigin(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func (h *handler) cleanUp() {
-	var data *unit
+	var data *paste
 	tmp := h.lhm.head
 	for {
 		if tmp == nil {
 			return
 		}
-		data = tmp.data.(*unit)
+		data = tmp.data
 		if data.exp <= time.Now().Unix() {
 			h.lock.Lock()
 			h.lhm.Delete(tmp.key)

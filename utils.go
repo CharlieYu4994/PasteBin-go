@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func hash(data unit) string {
+func hash(data paste) string {
 	tmp := []byte(data.text + strconv.Itoa(int(data.exp)))
 	hasher := fnv.New64a()
 	hasher.Write(tmp)
