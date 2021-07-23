@@ -27,7 +27,7 @@ func NewHandler(length int) *handler {
 }
 
 func (h *handler) add(w http.ResponseWriter, r *http.Request) {
-	ok := h.check(w, r)
+	ok := h.checkOrigin(w, r)
 	if r.Method != "POST" || !ok {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -72,7 +72,7 @@ func (h *handler) add(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	key, ok0 := r.URL.Query()["k"]
-	ok1 := h.check(w, r)
+	ok1 := h.checkOrigin(w, r)
 	if !ok1 || !ok0 {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -94,7 +94,7 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	key, ok0 := r.URL.Query()["k"]
-	ok1 := h.check(w, r)
+	ok1 := h.checkOrigin(w, r)
 	cookie, err := r.Cookie("token_" + key[0])
 	if !ok0 || !ok1 || err != nil {
 		w.WriteHeader(http.StatusForbidden)
@@ -123,7 +123,7 @@ func (h *handler) del(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h *handler) check(w http.ResponseWriter, r *http.Request) bool {
+func (h *handler) checkOrigin(w http.ResponseWriter, r *http.Request) bool {
 	origin := r.Header.Get("Origin")
 	if origin == "" {
 		return true
@@ -139,7 +139,7 @@ func (h *handler) check(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func (h *handler) cleanup() {
+func (h *handler) cleanUp() {
 	var data *unit
 	tmp := h.lhm.head
 	for {
@@ -160,7 +160,7 @@ func (h *handler) timeToCleanUp(dur int) {
 	timer := time.NewTimer(time.Second * time.Duration(dur))
 	for {
 		<-timer.C
-		h.cleanup()
+		h.cleanUp()
 		timer.Reset(time.Second * time.Duration(dur))
 	}
 }
