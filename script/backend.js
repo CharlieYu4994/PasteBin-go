@@ -1,15 +1,17 @@
 function getdomain() {
-    var url = "config.json"
-    var request = new XMLHttpRequest();
-    request.open("get", url, false);
-    request.send(null);
-    if (request.readyState == 4) {
-        if (request.status == 200) {
-            return JSON.parse(request.responseText)["backend"];
+    var backend
+
+    fetch("config.json").then(function (resp) {
+        if (resp.status == 200) {
+            backend = resp.json()["backend"];
         } else {
-            return "api/add";
+            backend = "api/backend"
         }
-    }
+    }).catch(function (err) {
+		console.error(err);
+	})
+
+    return backend
 }
 
 function getQueryString(name) {
@@ -39,9 +41,9 @@ function sendFormData(url, form) {
     var fd = new FormData(form);
 
     request.withCredentials = true;
-    request.open("POST", url+"/add");
+    request.open("POST", url + "/add");
     request.send(fd);
-    request.addEventListener("load", function() {
+    request.addEventListener("load", function () {
         if (request.status == 200) {
             window.location.href = "/get?k=" + request.responseText
         } else {
@@ -55,7 +57,7 @@ function del(url, key) {
     request.withCredentials = true;
     request.open("GET", url + "/del?k=" + key);
     request.send(null);
-    request.addEventListener("load", function() {
+    request.addEventListener("load", function () {
         switch (request.status) {
             case 403:
                 alert("这不是你上传的 Paste");
